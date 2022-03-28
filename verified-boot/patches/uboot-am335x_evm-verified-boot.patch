@@ -1,0 +1,30 @@
+diff --git a/include/configs/am335x_evm.h b/include/configs/am335x_evm.h
+index 778f49943b..cd2b94c518 100644
+--- a/include/configs/am335x_evm.h
++++ b/include/configs/am335x_evm.h
+@@ -227,7 +227,7 @@
+ 		"else " \
+ 			"setenv console ttyS0,115200n8;" \
+ 		"fi;\0" \
+-	EEWIKI_BOOT \
++	EEWIKI_VBOOT \
+ 	EEWIKI_UNAME_BOOT \
+ 	EEPROM_PROGRAMMING \
+ 	NANDARGS \
+diff --git a/include/configs/ti_armv7_common.h b/include/configs/ti_armv7_common.h
+index 1c63c8e66b..2f348b46b9 100644
+--- a/include/configs/ti_armv7_common.h
++++ b/include/configs/ti_armv7_common.h
+@@ -219,6 +219,12 @@
+ 		"i2c mw 0x50 0x0f.2 41; " \
+ 		"\0" \
+ 
++#define EEWIKI_VBOOT \
++	"boot=${devtype} dev ${mmcdev}; " \
++		"setenv bootargs console=ttyO0,115200n8 root=/dev/mmcblk0p1 ro rootfstype=ext4 rootwait;" \
++		"ext2load mmc 0:1 82000000 /boot/image.fit;" \
++		"bootm 82000000;\0" \
++
+ #define EEWIKI_BOOT \
+ 	"boot=${devtype} dev ${mmcdev}; " \
+ 		"if ${devtype} rescan; then " \
