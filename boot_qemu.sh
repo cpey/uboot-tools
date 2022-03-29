@@ -46,5 +46,5 @@ else
 		-serial stdio \
 		-kernel ${UBOOT}/${UBOOT_BIN} \
 		-audiodev id=none,driver=none \
-		-curses
+		-display none
 fi
