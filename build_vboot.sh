@@ -1,6 +1,6 @@
 #!/bin/bash
 
-UBOOT=u-boot
+source config.sh
 
 FIT=0
 while [[ $# -gt 0 ]]; do

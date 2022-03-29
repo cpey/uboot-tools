@@ -4,10 +4,7 @@
 
 set -ex
 
-ROOT_DIR=`pwd`
-LINUX=/home/cpey/dev/src/linux
-KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
-OUT=out
+source config.sh
 
 ALGO=rsa
 DIGEST=sha256
@@ -31,7 +28,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-[[ ! -d ${OUT} ]] && mkdir ${OUT}
+[[ ! -d ${OUT_DIR} ]] && mkdir ${OUT_DIR}
 
 if [[ ${ALGO} == "rsa" ]]; then
     priv_key=${ROOT_DIR}/keys_rsa/dev.key
@@ -42,5 +39,5 @@ else
     exit -1
 fi
 
-openssl dgst -${DIGEST} -binary -out ${OUT}/uImage.${DIGEST}.digest ${KERNEL_IMG}
-openssl pkeyutl -sign -in ${OUT}/uImage.${DIGEST}.digest -inkey ${priv_key} -pkeyopt digest:${DIGEST} -out ${OUT}/uImage.sign.${DIGEST}.${ALGO}.pkcs1_5
+openssl dgst -${DIGEST} -binary -out ${OUT_DIR}/uImage.${DIGEST}.digest ${KERNEL_IMG}
+openssl pkeyutl -sign -in ${OUT_DIR}/uImage.${DIGEST}.digest -inkey ${priv_key} -pkeyopt digest:${DIGEST} -out ${OUT_DIR}/uImage.sign.${DIGEST}.${ALGO}.pkcs1_5

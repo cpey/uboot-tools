@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CC=/opt/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
-LINUX=/home/cpey/dev/src/linux
+source config.sh
+
 MODULES_INST_DIR=build
 
 pushd `pwd`

@@ -3,18 +3,10 @@
 # This script prepares and image for the SD card to be emulated by QEMU as
 # storage media
 set -ex
-DEV=/dev/loop0
-OUT_DIR=out
-DEV_FILE=${OUT_DIR}/loop
-DEV_SIZE_G=1
-SDCARD_MOUNT_POINT=sdcard
 
-ROOT=`pwd`
-LINUX=~/repos/linux
-UBOOT=${ROOT}/u-boot/
-ROOTFS=${ROOT}/../debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
-VBOOT=${ROOT}/verified-boot/out2
-ECDSA_PKEY_DTB=ecdsa_public_key.dtb
+source config.sh
+
+DEV_SIZE_G=1
 
 FIT_IMAGE=0
 SETUP_DEVICE=0
@@ -79,10 +71,10 @@ function copy_os ()
 		sudo cp ${LINUX}/arch/arm/boot/uImage ${SDCARD_MOUNT_POINT}
 		sudo cp ${LINUX}/arch/arm/boot/dts/*.dtb ${SDCARD_MOUNT_POINT}
 	else
-		sudo cp ${VBOOT}/image.fit ${SDCARD_MOUNT_POINT}
-        if [[ ${ECDSA} -eq 1 ]]; then
-		    sudo cp ${VBOOT}/${ECDSA_PKEY_DTB} ${SDCARD_MOUNT_POINT}
-        fi
+		sudo cp ${VBOOT}/${VBOOT_OUT}/image.fit ${SDCARD_MOUNT_POINT}
+		if [[ ${ECDSA} -eq 1 ]]; then
+			sudo cp ${VBOOT}/${VBOOT_OUT}/${ECDSA_PKEY_DTB} ${SDCARD_MOUNT_POINT}
+		fi
 	fi
 	sync
     sudo umount ${DEV}

@@ -1,7 +1,6 @@
 #!/bin/bash
-OUT=out
-DEV_FILE=${OUT}/boot
-MOUNT_POINT=sdcard
+
+source config.sh
 
 SKIP_UBOOT=0
 while [[ $# -gt 0 ]]; do
@@ -19,7 +18,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ${SKIP_UBOOT} -eq 1 ]]; then
-	sudo mount -o loop,rw ${DEV_FILE} ${MOUNT_POINT}
+	sudo mount -o loop,rw ${DEV_FILE} ${SDCARD_MOUNT_POINT}
 
 	sudo qemu-system-aarch64 -M vexpress-a9 -m 1024 \
 		-serial stdio \
@@ -43,10 +42,9 @@ else
 	# => fatload mmc 0:0 0x82000000 image.fit
 	# => setenv bootargs 'root=/dev/mmcblk0p1 rw rootfstype=ext4 console=ttyAMA0'
 	# => bootm 0x82000000
-	# fatload mmc 0:0 0x82000000 image.fit; setenv bootargs 'root=/dev/mmcblk0p1 rw rootfstype=ext4 console=ttyAMA0'; bootm 0x82000000
 	sudo qemu-system-arm -M vexpress-a9 -sd ${DEV_FILE} -m 1024 \
 		-serial stdio \
-		-kernel u-boot/build/u-boot \
+		-kernel ${UBOOT}/${UBOOT_BIN} \
 		-audiodev id=none,driver=none \
 		-curses
 fi

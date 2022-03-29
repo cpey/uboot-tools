@@ -2,17 +2,7 @@
 
 set -ex
 
-ROOT_DIR=`pwd`
-UBOOT=${ROOT_DIR}/u-boot
-UBOOT_BIN=build/u-boot
-UBOOT_DTB=build/arch/arm/dts/vexpress-v2p-ca9.dtb
-UBOOT_DTB_PKEY=vexpress-v2p-ca9-pubkey.dtb
-KERNEL_DIR=/home/cpey/dev/src/linux
-KERNEL_BIN=arch/arm/boot/zImage
-KERNEL_DTB=arch/arm/boot/dts/vexpress-v2p-ca9.dtb
-VBOOT=${ROOT_DIR}/verified-boot
-OUT_DIR=out2
-MKIMAGE_BIN=${UBOOT}/build/tools/mkimage
+source config.sh
 
 function get_empty_dtb () 
 {
@@ -26,8 +16,8 @@ function get_empty_dtb ()
 	};
 	__EOF__
 	### Report bug u-boot mkimage
-	dtc -I dts -O dtb -o ${out}/ecdsa_public_key.dtb ${out}/test.dts
-	echo ${out}/ecdsa_public_key.dtb
+	dtc -I dts -O dtb -o ${out}/${ECDSA_PKEY_DTB} ${out}/test.dts
+	echo ${out}/${ECDSA_PKEY_DTB}
 }
 
 ALGO=rsa
@@ -66,23 +56,23 @@ cp -r keys_${ALGO} ${VBOOT}/keys
 pushd `pwd`
 cd ${VBOOT}
 
-[[ -d ${OUT_DIR} ]] && rm -r ${OUT_DIR}
-mkdir ${OUT_DIR}
+[[ -d ${VBOOT_OUT} ]] && rm -r ${VBOOT_OUT}
+mkdir ${VBOOT_OUT}
 
-cp ${VBOOT}/${ITS_FILE} ${OUT_DIR}
-cp -r keys ${OUT_DIR}
+cp ${VBOOT}/${ITS_FILE} ${VBOOT_OUT}
+cp -r keys ${VBOOT_OUT}
 
-ln -s ${KERNEL_DIR}/${KERNEL_DTB} ${OUT_DIR}
-ln -s ${KERNEL_DIR}/${KERNEL_BIN} ${OUT_DIR}/Image
-ln -s ${UBOOT}/${UBOOT_BIN} ${OUT_DIR}
-cp ${UBOOT}/${UBOOT_DTB} ${OUT_DIR}/${UBOOT_DTB_PKEY}
-lzop ${OUT_DIR}/Image -o ${OUT_DIR}/Image.lzo
+ln -s ${LINUX}/${LINUX_DTB} ${VBOOT_OUT}
+ln -s ${LINUX}/${LINUX_BIN} ${VBOOT_OUT}/Image
+ln -s ${UBOOT}/${UBOOT_BIN} ${VBOOT_OUT}
+cp ${UBOOT}/${UBOOT_DTB} ${VBOOT_OUT}/${VBOOT_UBOOT_DTB_PKEY}
+lzop ${VBOOT_OUT}/Image -o ${VBOOT_OUT}/Image.lzo
 
 if [[ ${EMPTY_DTB} -eq 0 ]]; then
-	${MKIMAGE_BIN} -f ${OUT_DIR}/${ITS_FILE} -K ${OUT_DIR}/${UBOOT_DTB_PKEY} -k ${OUT_DIR}/keys -r ${OUT_DIR}/image.fit
+	${MKIMAGE_BIN} -f ${VBOOT_OUT}/${ITS_FILE} -K ${VBOOT_OUT}/${VBOOT_UBOOT_DTB_PKEY} -k ${VBOOT_OUT}/keys -r ${VBOOT_OUT}/image.fit
 else
-	dtb_file=$(get_empty_dtb ${OUT_DIR})
-	${MKIMAGE_BIN} -f ${OUT_DIR}/${ITS_FILE} -K ${dtb_file} -k ${OUT_DIR}/keys -r ${OUT_DIR}/image.fit
+	dtb_file=$(get_empty_dtb ${VBOOT_OUT})
+	${MKIMAGE_BIN} -f ${VBOOT_OUT}/${ITS_FILE} -K ${dtb_file} -k ${VBOOT_OUT}/keys -r ${VBOOT_OUT}/image.fit
 fi
 
 rm -r keys
