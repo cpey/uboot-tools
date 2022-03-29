@@ -3,10 +3,10 @@ set -e
 
 CC=/opt/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
 ROOT_DIR=`pwd`
-BUILD_DIR=build
 UBOOT_DIR=u-boot
 VBOOT_DIR=${ROOT_DIR}/verified-boot/out2
 CONFIG=vexpress_ca9x4_defconfig
+BUILD_DIR=build
 
 SECURE_BOOT=0
 MENUCONFIG=0

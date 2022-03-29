@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 CC=/opt/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
 LINUX=/home/cpey/dev/src/linux
+MODULES_INST_DIR=build
 
 pushd `pwd`
 cd ${LINUX}
@@ -36,6 +37,6 @@ make ARCH=arm CROSS_COMPILE=${CC} -j `nproc` uImage LOADADDR=0x60008000
 
 # Build dynamic modules and copy to suitable destination
 make ARCH=arm CROSS_COMPILE=${CC} -j`nproc` modules
-make ARCH=arm CROSS_COMPILE=${CC} -j`nproc` modules_install INSTALL_MODPATH=${ROOTFS_MOUNT_POINT}
+make ARCH=arm CROSS_COMPILE=${CC} -j`nproc` modules_install INSTALL_MOD_PATH=${MODULES_INST_DIR}
 
 popd

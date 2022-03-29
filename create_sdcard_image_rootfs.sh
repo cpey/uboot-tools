@@ -4,12 +4,13 @@
 # storage media
 set -ex
 DEV=/dev/loop0
-DEV_FILE=loop
+OUT_DIR=out
+DEV_FILE=${OUT_DIR}/loop
 DEV_SIZE_G=1
 SDCARD_MOUNT_POINT=sdcard
 
 ROOT=`pwd`
-LINUX=/home/cpey/dev/src/linux
+LINUX=~/repos/linux
 UBOOT=${ROOT}/u-boot/
 ROOTFS=${ROOT}/../debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
 VBOOT=${ROOT}/verified-boot/out2
@@ -17,7 +18,6 @@ ECDSA_PKEY_DTB=ecdsa_public_key.dtb
 
 FIT_IMAGE=0
 SETUP_DEVICE=0
-ROOTFS=0
 ECDSA=0
 while [[ $# -gt 0 ]]; do
 	key="$1"
@@ -33,11 +33,6 @@ while [[ $# -gt 0 ]]; do
 			;;
 		-s|--setup)
 			SETUP_DEVICE=1
-			shift
-			;;
-		-r|--rootfs)
-			# Update rootfs
-			ROOTFS=1
 			shift
 			;;
 		*)
@@ -56,8 +51,11 @@ trap "trap_ctrlc" 2
 
 function remove_loop_device ()
 {
-	OUT=$(losetup -l | { grep ${DEV} || true; } )
-	echo $OUT
+	OUT=$(lsblk | { grep loop0p1 || true; })
+	[[ -n ${OUT} ]] && sudo umount /dev/loop0p1 || echo loop0p1 device not mounted
+	OUT=$(lsblk | { grep loop0 || true; })
+	[[ -n ${OUT} ]] && sudo umount /dev/loop0 || echo loop0 device not mounted
+	OUT=$(losetup -l | { grep ${DEV} || true; })
 	[[ -n ${OUT} ]] && sudo losetup -d ${DEV} || echo loop0 device available
 }
 
@@ -106,6 +104,9 @@ function copy_rootfs ()
 }
 
 remove_loop_device
+
+[[ ! -e ${OUT_DIR} ]] && mkdir ${OUT_DIR}
+
 if [[ ${SETUP_DEVICE} -eq 1 ]]; then
 	setup_sdcard
 	sync

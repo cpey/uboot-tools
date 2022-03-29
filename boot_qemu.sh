@@ -1,5 +1,6 @@
-#!/bin/sh
-DEV_FILE=boot
+#!/bin/bash
+OUT=out
+DEV_FILE=${OUT}/boot
 MOUNT_POINT=sdcard
 
 SKIP_UBOOT=0
@@ -43,7 +44,7 @@ else
 	# => setenv bootargs 'root=/dev/mmcblk0p1 rw rootfstype=ext4 console=ttyAMA0'
 	# => bootm 0x82000000
 	# fatload mmc 0:0 0x82000000 image.fit; setenv bootargs 'root=/dev/mmcblk0p1 rw rootfstype=ext4 console=ttyAMA0'; bootm 0x82000000
-	sudo qemu-system-arm -M vexpress-a9 -sd loop -m 1024 \
+	sudo qemu-system-arm -M vexpress-a9 -sd ${DEV_FILE} -m 1024 \
 		-serial stdio \
 		-kernel u-boot/build/u-boot \
 		-audiodev id=none,driver=none \

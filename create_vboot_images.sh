@@ -12,7 +12,7 @@ KERNEL_BIN=arch/arm/boot/zImage
 KERNEL_DTB=arch/arm/boot/dts/vexpress-v2p-ca9.dtb
 VBOOT=${ROOT_DIR}/verified-boot
 OUT_DIR=out2
-MKIMAGE_BIN=`pwd`/u-boot/build/tools/mkimage
+MKIMAGE_BIN=${UBOOT}/build/tools/mkimage
 
 function get_empty_dtb () 
 {
