@@ -43,10 +43,10 @@ trap "trap_ctrlc" 2
 
 function remove_loop_device ()
 {
-	OUT=$(lsblk | { grep loop0p1 || true; })
-	[[ -n ${OUT} ]] && sudo umount /dev/loop0p1 || echo loop0p1 device not mounted
-	OUT=$(lsblk | { grep loop0 || true; })
-	[[ -n ${OUT} ]] && sudo umount /dev/loop0 || echo loop0 device not mounted
+	OUT=$(lsblk | { grep ${DEV_NAME}p1 || true; })
+	[[ -n ${OUT} ]] && sudo umount ${DEV}p1 || echo loop0p1 device not mounted
+	OUT=$(lsblk | { grep ${DEV_NAME} || true; })
+	[[ -n ${OUT} ]] && sudo umount ${DEV} || echo loop0 device not mounted
 	OUT=$(losetup -l | { grep ${DEV} || true; })
 	[[ -n ${OUT} ]] && sudo losetup -d ${DEV} || echo loop0 device available
 }
