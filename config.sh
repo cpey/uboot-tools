@@ -1,23 +1,32 @@
 #!/bin/bash
 
 ROOT_DIR=`pwd`
-QEMU_BIN=qemu-system-arm
-
-# sdcard
 OUT_DIR=out
-DEV_NAME=loop0
-DEV=/dev/${DEV_NAME}
-DEV_FILE=${OUT_DIR}/loop
-SDCARD_MOUNT_POINT=sdcard
-ROOTFS=`pwd`/../debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
+QEMU_BIN=qemu-system-arm
+ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
 
 # Compiler
 CC=~/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
+
+# sdcard
+DEV_NAME=loop0
+DEV=/dev/${DEV_NAME}
+DEV_FILE=${OUT_DIR}/loop
+DEV_FILE_N_ROOTFS=${OUT_DIR}/loop_n_rootfs
+SDCARD_MOUNT_POINT=sdcard
+
+# Rootfs
+DEV_ROOTFS_NAME=loop1
+DEV_ROOTFS=/dev/${DEV_ROOTFS_NAME}
+OUT_DIR_ROOTFS=${OUT_DIR}/rootfs_images
+ROOTFS_IMG=rootfs.img
+DEV_FILE_ROOTFS=${OUT_DIR_ROOTFS}/${ROOTFS_IMG}
 
 # Linux
 LINUX=~/repos/linux
 LINUX_BIN=arch/arm/boot/zImage
 LINUX_DTB=arch/arm/boot/dts/vexpress-v2p-ca9.dtb
+LINUX_MODULES_DIR=build
 
 # U-Boot
 UBOOT=~/repos/u-boot
@@ -44,5 +53,13 @@ VBOOT_UBOOT_DTB_PKEY=vexpress-v2p-ca9-pubkey.dtb
 ECDSA_PKEY_DTB=ecdsa_public_key.dtb
 MKIMAGE_BIN=${UBOOT}/build/tools/mkimage
 
+# OpenSSL
+OPENSSL=~/repos/openssl
+OPENSSL_INST_DIR=${OPENSSL}/build
+
 # Sign
 KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
+
+# Init scripts
+INIT_SC_DIR=init-scripts
+DEFAULT_SC=init_to_rootfs.sh

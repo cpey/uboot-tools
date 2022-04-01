@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# This script prepares and image for the SD card to be emulated by QEMU as
-# storage media
+# This script prepares an image for the SD card to be emulated by QEMU as
+# storage media. The image will contain a Linux parition with the rootfs.
+
 set -ex
 
 source config.sh
@@ -120,4 +121,5 @@ if [[ ${SETUP_DEVICE} -eq 1 ]]; then
 fi
 
 rm -r ${SDCARD_MOUNT_POINT}
+remove_loop_device
 echo Done

@@ -2,8 +2,6 @@
 
 source config.sh
 
-MODULES_INST_DIR=build
-
 pushd `pwd`
 cd ${LINUX}
 
@@ -37,6 +35,6 @@ make ARCH=arm CROSS_COMPILE=${CC} -j `nproc` uImage LOADADDR=0x60008000
 
 # Build dynamic modules and copy to suitable destination
 make ARCH=arm CROSS_COMPILE=${CC} -j`nproc` modules
-make ARCH=arm CROSS_COMPILE=${CC} -j`nproc` modules_install INSTALL_MOD_PATH=${MODULES_INST_DIR}
+make ARCH=arm CROSS_COMPILE=${CC} -j`nproc` modules_install INSTALL_MOD_PATH=${LINUX_MODULES_DIR}
 
 popd

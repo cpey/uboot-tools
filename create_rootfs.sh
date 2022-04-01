@@ -2,45 +2,43 @@
 
 set -x
 
-OUT_DIR=~/tools/rootfs_images
-DEV=/dev/loop1
-ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
-DEV_FILE=${OUT_DIR}/loop_rootfs_qemu
+source config.sh
+
 DEV_SIZE_G=1
 MOUNT_POINT=rootfs
 
-OUT=$(losetup -l | { grep ${DEV} || true; })
-[[ -n ${OUT} ]] && sudo losetup -d ${DEV} || echo loop0 device available
+OUT=$(losetup -l | { grep ${DEV_ROOTFS} || true; })
+[[ -n ${OUT} ]] && sudo losetup -d ${DEV_ROOTFS} || echo ${DEV_ROOTFS_NAME} device available
 
 function setup_device ()
 {
-    touch ${DEV_FILE}
-    dd if=/dev/zero of=${DEV_FILE} bs=256 count=$((${DEV_SIZE_G} * 1024 ** 3 / 256))
-    sudo losetup -P ${DEV} ${DEV_FILE}
+    touch ${DEV_FILE_ROOTFS}
+    dd if=/dev/zero of=${DEV_FILE_ROOTFS} bs=256 count=$((${DEV_SIZE_G} * 1024 ** 3 / 256))
+    sudo losetup -P ${DEV_ROOTFS} ${DEV_FILE_ROOTFS}
     sleep 1
-    sudo mkfs.ext4 ${DEV}
+    sudo mkfs.ext4 ${DEV_ROOTFS}
 }
 
 # setup_device_qemu is functionally equivalent to setup_device
 function setup_device_qemu ()
 {
-    qemu-img create -f raw ${DEV_FILE} 1G
-    mkfs.ext4 ${DEV_FILE}
-    sudo losetup -P ${DEV} ${DEV_FILE}
+    qemu-img create -f raw ${DEV_FILE_ROOTFS} 1G
+    mkfs.ext4 ${DEV_FILE_ROOTFS}
+    sudo losetup -P ${DEV_ROOTFS} ${DEV_FILE_ROOTFS}
 }
 
 function copy_rootfs ()
 {
-    sudo mount ${DEV} ${MOUNT_POINT}
+    sudo mount ${DEV_ROOTFS} ${MOUNT_POINT}
     sudo tar xvf ${ROOTFS} -C ${MOUNT_POINT}
     sync
-    sudo umount ${DEV}
+    sudo umount ${DEV_ROOTFS}
 }
 
-[[ ! -d ${OUT_DIR} ]] && mkdir ${OUT_DIR}
+[[ ! -d ${OUT_DIR_ROOTFS} ]] && mkdir ${OUT_DIR_ROOTFS}
 [[ -d ${MOUNT_POINT} ]] && rm -r ${MOUNT_POINT}
 mkdir ${MOUNT_POINT}
 setup_device
 copy_rootfs
-sudo losetup -d ${DEV}
+sudo losetup -d ${DEV_ROOTFS}
 rm -r ${MOUNT_POINT}

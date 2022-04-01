@@ -5,11 +5,21 @@ set -ex
 source config.sh
 
 NEW_BUILD=1
+GET_SHELL=0
 while [[ $# -gt 0 ]]; do
 	key="$1"
 	case $key in
 		-n|--no-update)
 			NEW_BUILD=0
+			shift
+			;;
+		-s|--shell)
+			GET_SHELL=1
+			shift
+			;;
+		-i|--init)
+			CUSTOM_SC=$2
+			shift
 			shift
 			;;
 		*)
@@ -21,26 +31,27 @@ done
 
 pushd `pwd`
 
+function get_init_script ()
+{
+	[[ -n ${CUSTOM_SC} ]] && sc=${CUSTOM_SC} && return
+	sc=${DEFAULT_SC}
+	if [[ ${GET_SHELL} -eq 1 ]]; then
+		sc=shell.sh
+	fi
+}
+
 function create_initramfs_tree ()
 {
 	[[ -d ${INITRAMFS_TREE} ]] && rm -r ${INITRAMFS_TREE}
 	mkdir ${INITRAMFS_TREE}
 	cd ${INITRAMFS_TREE}
-	mkdir -pv {bin,sbin,etc,proc,sys,usr/{bin,sbin}}
+	mkdir -pv {bin,sbin,etc,proc,sys,usr/{bin,sbin},mnt}
 	cp -av ${BUSYBOX_INST}/* .
 	cp -av ${GLIBC_INST}/* .
 
 	# init
-	cat > init <<-EOF
-	#!/bin/sh
-
-	mount -t proc none /proc
-	mount -t sysfs none /sys
-
-	echo -e "\nBoot took \$(cut -d' ' -f1 /proc/uptime) seconds\n"
-
-	exec /bin/sh
-	EOF
+	get_init_script
+	cp ${ROOT_DIR}/${INIT_SC_DIR}/${sc} init
 	chmod +x init
 }
 
