@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # This script prepares an image for the SD card to be emulated by QEMU as
-# storage media. The image will on VFAT partition with the the rootfs image.
+# storage media. It will result in a VFAT partition containing the rootfs
+# image.
 
 set -ex
 

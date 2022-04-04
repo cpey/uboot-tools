@@ -2,6 +2,8 @@
 
 set -ex
 
+source config.sh
+
 ALGO=rsa
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -22,9 +24,9 @@ function create_dir () {
     local out
     local algo=$1
 
-    out=keys_${algo}
+    out=${OUT_DIR}/keys_${algo}
     [[ -d ${out} ]] && rm -r ${out}
-    mkdir ${out}
+    mkdir -p ${out}
     echo ${out}
 }
 

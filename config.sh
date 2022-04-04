@@ -7,6 +7,7 @@ ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye
 
 # Compiler
 CC=~/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
+CC_LIB=~/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/arm-none-linux-gnueabihf/lib
 
 # sdcard
 DEV_NAME=loop0
@@ -48,7 +49,7 @@ INITRAMFS_CPIO=initramfs-busybox-arm.cpio.gz
 
 # Verified boot
 VBOOT=${ROOT_DIR}/verified-boot
-VBOOT_OUT=out2
+VBOOT_OUT=${OUT_DIR}/verified-boot-out
 VBOOT_UBOOT_DTB_PKEY=vexpress-v2p-ca9-pubkey.dtb
 ECDSA_PKEY_DTB=ecdsa_public_key.dtb
 MKIMAGE_BIN=${UBOOT}/build/tools/mkimage
@@ -62,4 +63,4 @@ KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
 
 # Init scripts
 INIT_SC_DIR=init-scripts
-DEFAULT_SC=init_to_rootfs.sh
+DEFAULT_INIT=init_to_rootfs.sh

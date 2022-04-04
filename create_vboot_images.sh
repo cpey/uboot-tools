@@ -50,17 +50,13 @@ else
 	exit 1
 fi
 
-[[ -d ${VBOOT}/keys ]] && rm -r ${VBOOT}/keys
-cp -r keys_${ALGO} ${VBOOT}/keys
-
-pushd `pwd`
-cd ${VBOOT}
-
 [[ -d ${VBOOT_OUT} ]] && rm -r ${VBOOT_OUT}
 mkdir ${VBOOT_OUT}
 
+[[ -d ${VBOOT_OUT}/keys ]] && rm -r ${VBOOT_OUT}/keys
+cp -r ${OUT_DIR}/keys_${ALGO} ${VBOOT_OUT}/keys
+
 cp ${VBOOT}/${ITS_FILE} ${VBOOT_OUT}
-cp -r keys ${VBOOT_OUT}
 
 ln -s ${LINUX}/${LINUX_DTB} ${VBOOT_OUT}
 ln -s ${LINUX}/${LINUX_BIN} ${VBOOT_OUT}/Image
@@ -74,6 +70,3 @@ else
 	dtb_file=$(get_empty_dtb ${VBOOT_OUT})
 	${MKIMAGE_BIN} -f ${VBOOT_OUT}/${ITS_FILE} -K ${dtb_file} -k ${VBOOT_OUT}/keys -r ${VBOOT_OUT}/image.fit
 fi
-
-rm -r keys
-popd

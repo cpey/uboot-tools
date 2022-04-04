@@ -18,7 +18,7 @@ while [[ $# -gt 0 ]]; do
 			shift
 			;;
 		-i|--init)
-			CUSTOM_SC=$2
+			CUSTOM_INIT=$2
 			shift
 			shift
 			;;
@@ -33,8 +33,8 @@ pushd `pwd`
 
 function get_init_script ()
 {
-	[[ -n ${CUSTOM_SC} ]] && sc=${CUSTOM_SC} && return
-	sc=${DEFAULT_SC}
+	[[ -n ${CUSTOM_INIT} ]] && sc=${CUSTOM_INIT} && return
+	sc=${DEFAULT_INIT}
 	if [[ ${GET_SHELL} -eq 1 ]]; then
 		sc=shell.sh
 	fi
@@ -48,6 +48,9 @@ function create_initramfs_tree ()
 	mkdir -pv {bin,sbin,etc,proc,sys,usr/{bin,sbin},mnt}
 	cp -av ${BUSYBOX_INST}/* .
 	cp -av ${GLIBC_INST}/* .
+	cp -av ${OPENSSL_INST_DIR}/bin .
+	cp -av ${OPENSSL_INST_DIR}/lib .
+	cp -av ${CC_LIB} .
 
 	# init
 	get_init_script
