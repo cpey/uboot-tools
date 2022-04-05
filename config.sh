@@ -59,6 +59,7 @@ OPENSSL=~/repos/openssl
 OPENSSL_INST_DIR=${OPENSSL}/build
 
 # Sign
+SIGN_DIR=${OUT_DIR}/signatures
 KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
 
 # Init scripts

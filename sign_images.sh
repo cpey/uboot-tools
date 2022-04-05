@@ -8,6 +8,7 @@ source config.sh
 
 ALGO=rsa
 DIGEST=sha256
+IMAGE=${KERNEL_IMG}
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
@@ -21,6 +22,11 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
             ;;
+        -i|--image)
+            IMAGE=$2
+            shift
+            shift
+            ;;
         *)
             echo "Invalid argument"
             exit 1
@@ -31,13 +37,25 @@ done
 [[ ! -d ${OUT_DIR} ]] && mkdir ${OUT_DIR}
 
 if [[ ${ALGO} == "rsa" ]]; then
-    priv_key=${ROOT_DIR}/keys_rsa/dev.key
+    priv_key=${OUT_DIR}/keys_rsa/dev.key
 elif [[ ${ALGO} == "ecdsa" ]]; then
-    priv_key=${ROOT_DIR}/keys_ecdsa/ec-secp256k1-priv-key.pem
+    priv_key=${OUT_DIR}/keys_ecdsa/ec-secp256k1-priv-key.pem
 else
     echo "Algorithm '"${ALGO}"' not supported"
     exit -1
 fi
 
-openssl dgst -${DIGEST} -binary -out ${OUT_DIR}/uImage.${DIGEST}.digest ${KERNEL_IMG}
-openssl pkeyutl -sign -in ${OUT_DIR}/uImage.${DIGEST}.digest -inkey ${priv_key} -pkeyopt digest:${DIGEST} -out ${OUT_DIR}/uImage.sign.${DIGEST}.${ALGO}.pkcs1_5
+
+[[ -d ${SIGN_DIR} ]] && rm -r ${SIGN_DIR}
+mkdir ${SIGN_DIR}
+
+out_file=$(basename ${IMAGE}).${DIGEST}
+openssl dgst -${DIGEST} -binary -out ${SIGN_DIR}/${out_file}.digest ${IMAGE}
+openssl pkeyutl -sign \
+        -in ${SIGN_DIR}/${out_file}.digest \
+        -inkey ${priv_key} \
+        -pkeyopt digest:${DIGEST} \
+        -out ${SIGN_DIR}/${out_file}.${ALGO}.pkcs1_5
+
+# Verification
+#openssl pkeyutl -in rootfs.img.sha384.digest -inkey ../keys_ecdsa/ec-secp256k1-pub-key.der -keyform DER -pubin -verify -sigfile rootfs.img.sha384.ecdsa.pkcs1_5
