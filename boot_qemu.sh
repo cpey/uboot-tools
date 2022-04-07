@@ -31,12 +31,19 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
             ;;
+        -c|--cmdline)
+            cmdline_arg="$2"
+            shift
+            shift
+            ;;
         *)
             echo "Invalid argument"
             exit 1
             ;;
     esac
 done
+
+BOOT_DEV_FILE=${DEV_FILE}
 
 function mount_sdcard ()
 {
@@ -47,7 +54,7 @@ function mount_sdcard ()
 	if [[ ! -d ${SDCARD_MOUNT_POINT} ]]; then
 		mkdir ${SDCARD_MOUNT_POINT}
 	fi
-	sudo mount -o loop,rw ${DEV_FILE} ${SDCARD_MOUNT_POINT}
+	sudo mount -o loop,rw ${BOOT_DEV_FILE} ${SDCARD_MOUNT_POINT}
 }
 
 function umount_sdcard ()
@@ -94,9 +101,17 @@ function parse_args ()
 	else
 		initrd="-initrd ${initramfs_arg}"
 	fi
+
+	CMDLINE="root=/dev/mmcblk0 rw rootfstype=ext4 console=ttyAMA0"
+	if [[ ! -n ${cmdline_arg} ]]; then
+		cmdline=${CMDLINE}
+	else
+		cmdline="${CMDLINE} ${cmdline_arg}"
+	fi
 }
 
 if [[ ${SKIP_UBOOT} -eq 1 ]]; then
+    BOOT_DEV_FILE=${DEV_FILE_N_ROOTFS}
     parse_args
 	sudo ${QEMU_BIN} -M vexpress-a9 -m 1024 \
         ${initrd} \
@@ -104,7 +119,7 @@ if [[ ${SKIP_UBOOT} -eq 1 ]]; then
 		-kernel ${kernel} \
 		-dtb ${dtb} \
 		-sd ${rootfs} \
-		-append "root=/dev/mmcblk0 rw rootfstype=ext4 console=ttyAMA0" \
+		-append "${cmdline}" \
 		-display none
 else
 	# --------------------------------
@@ -122,7 +137,7 @@ else
 	# => setenv bootargs 'root=/dev/mmcblk0p1 rw rootfstype=ext4 console=ttyAMA0'
 	# => bootm 0x82000000
 	sudo ${QEMU_BIN} -M vexpress-a9 -m 1024 \
-        -sd ${DEV_FILE} \
+        -sd ${BOOT_DEV_FILE} \
 		-serial stdio \
 		-kernel ${UBOOT}/${UBOOT_BIN} \
 		-audiodev id=none,driver=none \

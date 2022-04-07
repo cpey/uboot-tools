@@ -5,11 +5,18 @@ set -ex
 source config.sh
 
 ALGO=rsa
+CURVE=secp256k1
 while [[ $# -gt 0 ]]; do
+    echo "IN"
     key="$1"
     case $key in
         -a|--algorithm)
-            ALGO=$2
+            ALGO=$(echo $2|tr '[:upper:]' '[:lower:]')
+            shift
+            shift
+            ;;
+        -c|curve)
+            CURVE=$2
             shift
             shift
             ;;
@@ -45,13 +52,14 @@ function create_rsa_keys () {
 
 function create_ecdsa_keys () {
     local out=$1
-    openssl ecparam -name secp256k1 -genkey -noout -out ${out}/ec-secp256k1-priv-key.pem
-    openssl ec -in ${out}/ec-secp256k1-priv-key.pem -pubout -outform der -out ${out}/ec-secp256k1-pub-key.der
-    dd if=${out}/ec-secp256k1-pub-key.der of=${out}/ec-secp256k1-pub-key.raw bs=24 skip=1
-    openssl req -batch -new -x509 -key ${out}/ec-secp256k1-priv-key.pem -out ${out}/dev.crt
+    openssl ecparam -name ${CURVE} -genkey -noout -out ${out}/ec-${CURVE}-priv-key.pem
+    openssl ec -in ${out}/ec-${CURVE}-priv-key.pem -pubout -outform der -out ${out}/ec-${CURVE}-pub-key.der
+    openssl ec -in ${out}/ec-${CURVE}-priv-key.pem -pubout -outform pem -out ${out}/ec-${CURVE}-pub-key.pem
+    dd if=${out}/ec-${CURVE}-pub-key.der of=${out}/ec-${CURVE}-pub-key.raw bs=24 skip=1
+    openssl req -batch -new -x509 -key ${out}/ec-${CURVE}-priv-key.pem -out ${out}/dev.crt
 
     # Print out
-    openssl ec -in ${out}/ec-secp256k1-priv-key.pem -pubout
+    openssl ec -in ${out}/ec-${CURVE}-priv-key.pem -pubout
     openssl x509 -in ${out}/dev.crt -noout -text
 }
 
@@ -59,6 +67,6 @@ if [[ ${ALGO} == "rsa" ]]; then
         out=$(create_dir ${ALGO})
         create_rsa_keys ${out}
 elif [[ ${ALGO} == "ecdsa" ]]; then
-        out=$(create_dir ${ALGO})
+        out=$(create_dir ${ALGO}_${CURVE})
         create_ecdsa_keys ${out}
 fi

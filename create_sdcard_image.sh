@@ -29,6 +29,11 @@ while [[ $# -gt 0 ]]; do
 			SETUP_DEVICE=1
 			shift
 			;;
+		-a|--add)
+			ADD_FILE=$2
+			shift
+            shift
+			;;
 		*)
 			echo "Invalid argument"
 			exit 1
@@ -94,6 +99,15 @@ function copy_rootfs ()
 	sudo umount ${DEV}
 }
 
+function copy_extra ()
+{
+    [[ ! -n ${ADD_FILE} ]] && return
+	sudo mount ${DEV} ${SDCARD_MOUNT_POINT}
+	sudo cp ${ADD_FILE} ${SDCARD_MOUNT_POINT}
+	sync
+	sudo umount ${DEV}
+}
+
 remove_loop_device
 
 [[ ! -e ${OUT_DIR} ]] && mkdir ${OUT_DIR}
@@ -116,6 +130,7 @@ copy_uboot
 if [[ ${SETUP_DEVICE} -eq 1 ]]; then
 	copy_rootfs
 fi
+copy_extra
 
 rm -r ${SDCARD_MOUNT_POINT}
 remove_loop_device

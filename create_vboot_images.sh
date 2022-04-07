@@ -21,12 +21,18 @@ function get_empty_dtb ()
 }
 
 ALGO=rsa
+CURVE=secp256k1
 EMPTY_DTB=0
 while [[ $# -gt 0 ]]; do
 	key="$1"
 	case $key in
 		-a|--algorithm)
-			ALGO=$2
+            ALGO=$(echo $2|tr '[:upper:]' '[:lower:]')
+			shift
+			shift
+			;;
+		-c|--curve)
+			CURVE=$2
 			shift
 			shift
 			;;
@@ -43,8 +49,10 @@ done
 
 if [[ ${ALGO} == "rsa" ]]; then
 	ITS_FILE=sign.rsa.its
+	dirname=${ALGO}
 elif [[ ${ALGO} == "ecdsa" ]]; then
 	ITS_FILE=sign.ecdsa.its
+	dirname=${ALGO}_${CURVE}
 else
 	echo "Algorithm '"${ALGO}"' not supported"
 	exit 1
@@ -54,7 +62,7 @@ fi
 mkdir ${VBOOT_OUT}
 
 [[ -d ${VBOOT_OUT}/keys ]] && rm -r ${VBOOT_OUT}/keys
-cp -r ${OUT_DIR}/keys_${ALGO} ${VBOOT_OUT}/keys
+cp -r ${OUT_DIR}/keys_${dirname} ${VBOOT_OUT}/keys
 
 cp ${VBOOT}/${ITS_FILE} ${VBOOT_OUT}
 
