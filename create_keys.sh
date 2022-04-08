@@ -37,6 +37,16 @@ function create_dir () {
     echo ${out}
 }
 
+function check_curve() {
+    local curve=$1
+    existing_curves=$(openssl ecparam -list_curves | tr -d ' ' |
+                        sed '/\t/d' | cut -d: -f1 | grep ${curve} | wc -l)
+    if [[ ! ${existing_curves} -eq 1 ]]; then
+        echo "Unsupported curve type '"${curve}"'"
+        exit -1
+    fi
+}
+
 function create_rsa_keys () {
     local out=$1
     # Create a new public/private key pair and certificate for the public key
@@ -67,6 +77,7 @@ if [[ ${ALGO} == "rsa" ]]; then
         out=$(create_dir ${ALGO})
         create_rsa_keys ${out}
 elif [[ ${ALGO} == "ecdsa" ]]; then
+        check_curve ${CURVE}
         out=$(create_dir ${ALGO}_${CURVE})
         create_ecdsa_keys ${out}
 fi
