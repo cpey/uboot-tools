@@ -22,6 +22,11 @@ while [[ $# -gt 0 ]]; do
 			shift
 			shift
 			;;
+        -a|add)
+			ADD_BIN=$2
+			shift
+			shift
+			;;
 		*)
 			echo "Invalid argument"
 			exit 1
@@ -63,6 +68,8 @@ if [[ ${NEW_BUILD} -eq 1 ]]; then
 else
 	cd ${INITRAMFS_TREE}
 fi
+
+[[ -n ${ADD_BIN} ]] && cp ${ADD_BIN} bin
 
 # generate cpio
 find . -print0 \

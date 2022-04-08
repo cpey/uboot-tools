@@ -2,7 +2,7 @@
 
 ROOT_DIR=`pwd`
 OUT_DIR=out
-QEMU_BIN=qemu-system-arm
+QEMU_BIN=~carlesp/bin/qemu-system-arm
 ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
 
 # Compiler
@@ -28,6 +28,12 @@ LINUX=~/repos/linux
 LINUX_BIN=arch/arm/boot/zImage
 LINUX_DTB=arch/arm/boot/dts/vexpress-v2p-ca9.dtb
 LINUX_MODULES_DIR=build
+
+# Arm Trusted Firmware
+ATF=~/repos/trusted-firmware-a
+
+# OPTEE OS
+OPTEE=repos/optee_os
 
 # U-Boot
 UBOOT=~/repos/u-boot
