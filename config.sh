@@ -52,6 +52,7 @@ VBOOT=${ROOT_DIR}/verified-boot
 VBOOT_OUT=${OUT_DIR}/verified-boot-out
 VBOOT_UBOOT_DTB_PKEY=vexpress-v2p-ca9-pubkey.dtb
 ECDSA_PKEY_DTB=ecdsa_public_key.dtb
+RSA_PKEY_DTB=rsa_public_key.dtb
 MKIMAGE_BIN=${UBOOT}/build/tools/mkimage
 
 # OpenSSL
