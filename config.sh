@@ -29,6 +29,12 @@ LINUX_BIN=arch/arm/boot/zImage
 LINUX_DTB=arch/arm/boot/dts/vexpress-v2p-ca9.dtb
 LINUX_MODULES_DIR=build
 
+# Arm Trusted Firmware
+ATF=~/repos/trusted-firmware-a
+
+# OPTEE OS
+OPTEE=repos/optee_os
+
 # U-Boot
 UBOOT=~/repos/u-boot
 UBOOT_CONFIG=vexpress_ca9x4_defconfig
