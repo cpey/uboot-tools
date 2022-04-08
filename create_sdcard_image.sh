@@ -32,7 +32,7 @@ while [[ $# -gt 0 ]]; do
 		-a|--add)
 			ADD_FILE=$2
 			shift
-            shift
+			shift
 			;;
 		*)
 			echo "Invalid argument"
@@ -101,7 +101,7 @@ function copy_rootfs ()
 
 function copy_extra ()
 {
-    [[ ! -n ${ADD_FILE} ]] && return
+	[[ ! -n ${ADD_FILE} ]] && return
 	sudo mount ${DEV} ${SDCARD_MOUNT_POINT}
 	sudo cp ${ADD_FILE} ${SDCARD_MOUNT_POINT}
 	sync

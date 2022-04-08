@@ -28,7 +28,7 @@ while [[ $# -gt 0 ]]; do
 	key="$1"
 	case $key in
 		-a|--algorithm)
-            ALGO=$(echo $2|tr '[:upper:]' '[:lower:]')
+			ALGO=$(echo $2|tr '[:upper:]' '[:lower:]')
 			shift
 			shift
 			;;

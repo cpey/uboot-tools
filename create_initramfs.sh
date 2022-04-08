@@ -22,7 +22,7 @@ while [[ $# -gt 0 ]]; do
 			shift
 			shift
 			;;
-        -a|add)
+		-a|add)
 			ADD_BIN=$2
 			shift
 			shift
