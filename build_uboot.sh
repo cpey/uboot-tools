@@ -11,12 +11,12 @@ CLEAN_BUILD=0
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
-       -d|--defconfig)
+        -d|--defconfig)
             UBOOT_CONFIG=$2
             shift
             shift
             ;;
-       -c|--clean)
+        -c|--clean)
             CLEAN_BUILD=1
             shift
             ;;

@@ -2,12 +2,14 @@
 
 ROOT_DIR=`pwd`
 OUT_DIR=out
-QEMU_BIN=~carlesp/bin/qemu-system-arm
+QEMU_BIN_ARM=qemu-system-arm
+QEMU_BIN_AARCH64=qemu-system-aarch64
 ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
 
 # Compiler
 CC=~/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
 CC_LIB=~/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/arm-none-linux-gnueabihf/lib
+CC64=~/toolchains/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-
 
 # sdcard
 DEV_NAME=loop0
@@ -29,11 +31,25 @@ LINUX_BIN=arch/arm/boot/zImage
 LINUX_DTB=arch/arm/boot/dts/vexpress-v2p-ca9.dtb
 LINUX_MODULES_DIR=build
 
+# Linux AARCH64
+LINUX64=~/repos/linux_aarch64
+LINUX64_BIN=arch/arm/boot/zImage
+
 # Arm Trusted Firmware
 ATF=~/repos/trusted-firmware-a
+ATF_BIN_DIR=~/repos/trusted-firmware-a/build/qemu/release
 
 # OPTEE OS
-OPTEE=repos/optee_os
+OPTEE=~/repos/optee_os
+
+# edk2
+EDK2=~/repos/edk2
+EDK2_BIN=Build/ArmVirtQemuKernel-AARCH64/DEBUG_GCC5/FV/QEMU_EFI.fd
+
+# BuildRoot
+BUILDROOT=~/repos/buildroot
+BUILDROOT_TAG=2022.02
+BUILDROOT_IMG=output/images/rootfs.cpio.gz
 
 # U-Boot
 UBOOT=~/repos/u-boot

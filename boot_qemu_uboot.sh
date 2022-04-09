@@ -2,32 +2,14 @@
 set -x
 
 source config.sh
+source helper.sh
 
 SKIP_UBOOT=0
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
-        -s|--skip-uboot)
-            SKIP_UBOOT=1
-            shift
-            ;;
-        -r|--rootfs)
-            rootfs_arg="$2"
-            shift
-            shift
-            ;;
-        -k|--kernel)
-            kernel_arg="$2"
-            shift
-            shift
-            ;;
-        -d|--dtb)
-            dtb_arg="$2"
-            shift
-            shift
-            ;;
-        -i|--initramfs)
-            initramfs_arg="$2"
+        -a|--arch)
+            arch_arg="$2"
             shift
             shift
             ;;
@@ -36,14 +18,41 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
             ;;
+        -d|--dtb)
+            dtb_arg="$2"
+            shift
+            shift
+            ;;
+        -f|--sd-card)
+            sdcard_dfile_arg="$2"
+            shift
+            shift
+            ;;
+        -i|--initramfs)
+            initramfs_arg="$2"
+            shift
+            shift
+            ;;
+        -k|--kernel)
+            kernel_arg="$2"
+            shift
+            shift
+            ;;
+        -r|--rootfs)
+            rootfs_arg="$2"
+            shift
+            shift
+            ;;
+        -s|--skip-uboot)
+            SKIP_UBOOT=1
+            shift
+            ;;
         *)
             echo "Invalid argument"
             exit 1
             ;;
     esac
 done
-
-BOOT_DEV_FILE=${DEV_FILE}
 
 function mount_sdcard ()
 {
@@ -54,7 +63,7 @@ function mount_sdcard ()
 	if [[ ! -d ${SDCARD_MOUNT_POINT} ]]; then
 		mkdir ${SDCARD_MOUNT_POINT}
 	fi
-	sudo mount -o loop,rw ${BOOT_DEV_FILE} ${SDCARD_MOUNT_POINT}
+	sudo mount -o loop,rw ${sdcard_dfile} ${SDCARD_MOUNT_POINT}
 }
 
 function umount_sdcard ()
@@ -75,6 +84,12 @@ trap "trap_ctrlc" 2
 
 function parse_args ()
 {
+	if [[ ! -n ${sdcard_dfile_arg} ]]; then
+		sdcard_dfile=${DEV_FILE}
+	else
+		sdcard_dfile=${sdcard_dfile_arg}
+	fi
+
 	if [[ ! -n ${kernel_arg} ]]; then
 		mount_sdcard
 		kernel=${SDCARD_MOUNT_POINT}/zImage
@@ -108,12 +123,19 @@ function parse_args ()
 	else
 		cmdline="${CMDLINE} ${cmdline_arg}"
 	fi
+
+	if [[ ! -n ${arch_arg} ]]; then
+		arch="arm"
+	else
+		arch=${arch_arg}
+    fi
 }
 
+parse_args
+qemu_bin=$(get_qemu_bin ${arch})
+
 if [[ ${SKIP_UBOOT} -eq 1 ]]; then
-    BOOT_DEV_FILE=${DEV_FILE_N_ROOTFS}
-    parse_args
-	sudo ${QEMU_BIN} -M vexpress-a9 -m 1024 \
+	sudo ${qemu_bin} -M vexpress-a9 -m 1024 \
         ${initrd} \
 		-serial stdio \
 		-kernel ${kernel} \
@@ -136,8 +158,8 @@ else
 	# => fatload mmc 0:0 0x82000000 image.fit
 	# => setenv bootargs 'root=/dev/mmcblk0p1 rw rootfstype=ext4 console=ttyAMA0'
 	# => bootm 0x82000000
-	sudo ${QEMU_BIN} -M vexpress-a9 -m 1024 \
-        -sd ${BOOT_DEV_FILE} \
+	sudo ${qemu_bin} -M vexpress-a9 -m 1024 \
+        -sd ${sdcard_dfile} \
 		-serial stdio \
 		-kernel ${UBOOT}/${UBOOT_BIN} \
 		-audiodev id=none,driver=none \

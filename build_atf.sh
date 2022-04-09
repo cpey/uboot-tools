@@ -7,7 +7,7 @@ source config.sh
 pushd `pwd`
 cd ${ATF}
 
-export CROSS_COMPILE=${CC}
-make PLAT=qemu ARCH=aarch32 ARM_ARCH_MAJOR=7 all
+export CROSS_COMPILE=${CC64}
+make PLAT=qemu ARCH=aarch64 ARM_ARCH_MAJOR=8 all
 
 popd
