@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 source config.sh
 
 CONFIG=0
@@ -30,37 +32,40 @@ function get_config ()
 
 	if [[ $ARCH == "arm" ]]; then
 		cc=${CC}
-		source=${LINUX}
-        config=vexpress_defconfig
-        arch=arm
+		src=${LINUX}
+		config=vexpress_defconfig
+		arch=arm
+		target=zImage
 	elif [[ $ARCH == "aarch64" ]]; then
 		cc=${CC64}
-		source=${LINUX_64}
-        config=
-        arch=arm64
+		src=${LINUX64}
+		config=defconfig
+		arch=arm64
+		target=Image
 	else
 		echo "Unsupported architecture"
 		exit -1
 	fi
 }
 
-pushd `pwd`
-cd ${source}
-
 get_config
+
+pushd `pwd`
+cd ${src}
 
 if [[ ${CONFIG} -eq 1 ]]; then
 make mrproper
 make ARCH=${arch} ${config}
 make ARCH=${arch} menuconfig
-exit
 fi
 
-# Generate kernel image as zImage and necessary dtb files
-make ARCH=${arch} CROSS_COMPILE=${cc} -j`nproc` zImage dtbs
+ Generate kernel image as zImage and necessary dtb files
+make ARCH=${arch} CROSS_COMPILE=${cc} -j`nproc` ${target} dtbs
 
-# Transform zImage to use with u-boot 
-make ARCH=${arch} CROSS_COMPILE=${cc} -j `nproc` uImage LOADADDR=0x60008000
+if [[ ${arch} == "arm" ]]; then
+    # Transform zImage to use with u-boot
+    make ARCH=${arch} CROSS_COMPILE=${cc} -j `nproc` uImage LOADADDR=0x60008000
+fi
 
 # Build dynamic modules and copy to suitable destination
 make ARCH=${arch} CROSS_COMPILE=${cc} -j`nproc` modules

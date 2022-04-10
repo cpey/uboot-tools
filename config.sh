@@ -33,14 +33,14 @@ LINUX_MODULES_DIR=build
 
 # Linux AARCH64
 LINUX64=~/repos/linux_aarch64
-LINUX64_BIN=arch/arm/boot/zImage
+LINUX64_BIN=arch/arm64/boot/Image
 
 # Arm Trusted Firmware
 ATF=~/repos/trusted-firmware-a
 ATF_BIN_DIR=~/repos/trusted-firmware-a/build/qemu/release
 
 # OPTEE OS
-OPTEE=~/repos/optee_os
+OPTEE=~/repos/optee
 
 # edk2
 EDK2=~/repos/edk2

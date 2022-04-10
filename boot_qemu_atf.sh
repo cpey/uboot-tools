@@ -25,7 +25,7 @@ set_atf_links
 
 ${QEMU_BIN_AARCH64} \
 	-nographic -machine virt,secure=on -cpu cortex-a57 \
-    -kernel ${LINUX}/${LINUX_BIN} \
+    -kernel ${LINUX64}/${LINUX64_BIN} \
     -append "console=ttyAMA0,38400 keep_bootcon" \
     -initrd ${BUILDROOT}/${BUILDROOT_IMG} -smp 2 -m 1024 -bios bl1.bin \
     -d unimp -semihosting-config enable,target=native
