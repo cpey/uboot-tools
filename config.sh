@@ -40,7 +40,7 @@ ATF=~/repos/trusted-firmware-a
 ATF_BIN_DIR=~/repos/trusted-firmware-a/build/qemu/release
 
 # OPTEE OS
-OPTEE=~/repos/optee
+OPTEE=~/repos/optee-qemu
 
 # edk2
 EDK2=~/repos/edk2
@@ -88,3 +88,6 @@ KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
 # Init scripts
 INIT_SC_DIR=init-scripts
 DEFAULT_INIT=init_to_rootfs.sh
+
+# QEMU
+QEMU=~/repos/qemu
