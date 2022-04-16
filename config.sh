@@ -2,9 +2,12 @@
 
 ROOT_DIR=`pwd`
 OUT_DIR=out
-QEMU_BIN_ARM=qemu-system-arm
-QEMU_BIN_AARCH64=qemu-system-aarch64
 ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
+
+# QEMU
+QEMU=~/repos/qemu
+QEMU_BIN_ARM=${QEMU}/build/qemu-system-arm
+QEMU_BIN_AARCH64=${QEMU}/build/qemu-system-aarch64
 
 # Compiler
 CC=~/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
@@ -41,6 +44,10 @@ ATF_BIN_DIR=~/repos/trusted-firmware-a/build/qemu/release
 
 # OPTEE OS
 OPTEE=~/repos/optee-qemu
+OPTEE_ROOTFS=~/repos/optee-qemu
+OPTEE_CLIENT=${OPTEE}/optee_client
+OPTEE_EXAMPLES=${OPTEE}/optee_examples
+OPTEE_OS=${OPTEE}/optee_os
 
 # edk2
 EDK2=~/repos/edk2
@@ -88,6 +95,3 @@ KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
 # Init scripts
 INIT_SC_DIR=init-scripts
 DEFAULT_INIT=init_to_rootfs.sh
-
-# QEMU
-QEMU=~/repos/qemu
