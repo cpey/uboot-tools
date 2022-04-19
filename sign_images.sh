@@ -78,3 +78,4 @@ openssl pkeyutl -sign \
 
 # Verification
 #openssl pkeyutl -in rootfs.img.sha384.digest -inkey ../keys_ecdsa/ec-secp256k1-pub-key.der -keyform DER -pubin -verify -sigfile rootfs.img.sha384.ecdsa.pkcs1_5
+#openssl pkeyutl -in test.img.sha384.digest -inkey ../keys_ecdsa/ec-secp256k1-pub-key.der -keyform DER -pubin -verify -sigfile test.img.sha384.ecdsa.pkcs1_5

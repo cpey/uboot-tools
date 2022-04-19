@@ -7,16 +7,17 @@ source config.sh
 while [[ $# -gt 0 ]]; do
 	key="$1"
 	case $key in
-		-c|--client)
-			CLIENT=1
-			shift
-			;;
 		-b|--buildroot)
 			BR=1
 			shift
 			;;
-		-e|--examples)
-			EXAMPLES=1
+		-c|--client)
+			CLIENT=1
+			shift
+			;;
+		-e|--example)
+			EXAMPLE=$2
+			shift
 			shift
 			;;
 		-f|--full-build)
@@ -42,6 +43,8 @@ export AARCH64_CROSS_COMPILE=${CC64}
 
 if [[ -n ${CLIENT} ]]; then
 	cd ${OPTEE_CLIENT}
+	[[ ! -d ${OPTEE_CLIENT}/build ]] && mkdir ${OPTEE_CLIENT}/build
+
 	cmake -DCMAKE_INSTALL_PREFIX=${OPTEE_CLIENT}/build \
 	      -DCMAKE_C_COMPILER=${CC64}gcc
 	make
@@ -72,17 +75,25 @@ if [[ -n ${BR} ]]; then
     #  ${OPTEE}/out-br/target/lib/optee_armtz/
 fi
 
-if [[ -n ${EXAMPLES} ]]; then
-	cd ${OPTEE_EXAMPLES}/hello_world
-	cmake -DCMAKE_INSTALL_PREFIX=${OPTEE_EXAMPLES}/hello_world \
-	      -DCMAKE_C_COMPILER=${CC64}gcc
-	make
-	make install
+if [[ -n ${EXAMPLE} ]]; then
+	if [[ ${EXAMPLE} == all ]]; then
+		cd ${OPTEE_EXAMPLES}
+		cmake -DCMAKE_INSTALL_PREFIX=${OPTEE_EXAMPLES}/build \
+		      -DCMAKE_C_COMPILER=${CC64}gcc
+		make
+		make install
+	else
+		cd ${OPTEE_EXAMPLES}/${EXAMPLE}
+		cmake -DCMAKE_INSTALL_PREFIX=${OPTEE_EXAMPLES}/build \
+		      -DCMAKE_C_COMPILER=${CC64}gcc
+		make
+		make install
 
-	cd ${OPTEE_EXAMPLES}/hello_world/ta
-	make CROSS_COMPILE=${CC} \
-		PLATFORM=vexpress-qemu_virt \
-		TA_DEV_KIT_DIR=${OPTEE_OS}/build/export-ta_arm32 \
+		cd ${OPTEE_EXAMPLES}/${EXAMPLE}/ta
+		make CROSS_COMPILE=${CC64} \
+			PLATFORM=vexpress-qemu_virt \
+			TA_DEV_KIT_DIR=${OPTEE_OS}/out/arm/export-ta_arm64
+	fi
 fi
 
 if [[ -n ${FULL} ]]; then
