@@ -11,6 +11,10 @@ while [[ $# -gt 0 ]]; do
 			CLIENT=1
 			shift
 			;;
+		-b|--buildroot)
+			BR=1
+			shift
+			;;
 		-e|--examples)
 			EXAMPLES=1
 			shift
@@ -57,6 +61,15 @@ if [[ -n ${OS} ]]; then
 		DEBUG=1 \
 		O=build \
 		PLATFORM=vexpress-qemu_armv8a
+fi
+
+if [[ -n ${BR} ]]; then
+	cd ${OPTEE}/build
+	make buildroot
+    # buildroot fs:
+    #  ${OPTEE}/out-br/images/rootfs.cpio.gz
+    # TAs in:
+    #  ${OPTEE}/out-br/target/lib/optee_armtz/
 fi
 
 if [[ -n ${EXAMPLES} ]]; then
