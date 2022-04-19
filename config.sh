@@ -5,7 +5,7 @@ OUT_DIR=out
 ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
 
 # QEMU
-QEMU=~/repos/qemu
+QEMU=~/repos/qemu-7.0.0-rc1
 QEMU_BIN_ARM=${QEMU}/build/qemu-system-arm
 QEMU_BIN_AARCH64=${QEMU}/build/qemu-system-aarch64
 
