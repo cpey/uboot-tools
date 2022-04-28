@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
 function checkout_source ()
 {

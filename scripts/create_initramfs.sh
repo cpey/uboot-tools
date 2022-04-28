@@ -2,7 +2,8 @@
 
 set -ex
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
 NEW_BUILD=1
 GET_SHELL=0
@@ -59,7 +60,7 @@ function create_initramfs_tree ()
 
 	# init
 	get_init_script
-	cp ${ROOT_DIR}/${INIT_SC_DIR}/${sc} init
+	cp ${INIT_SC_DIR}/${sc} init
 	chmod +x init
 }
 

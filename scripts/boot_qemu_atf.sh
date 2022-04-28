@@ -1,7 +1,8 @@
 #!/bin/bash
 set -ex
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
 ATF_FILES=()
 function set_atf_links () 

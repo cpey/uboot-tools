@@ -1,3 +1,3 @@
-# U-Boot Tools
+# Platform Tools
 
-Collection of scripts for U-Boot development.
+Collection of scripts for platform development.

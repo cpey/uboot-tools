@@ -1,7 +1,7 @@
 #!/bin/bash
 
-ROOT_DIR=`pwd`
-OUT_DIR=out
+ROOT_DIR=$(dirname $0)/..
+OUT_DIR=${ROOT_DIR}/out
 ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
 
 # QEMU
@@ -19,7 +19,7 @@ DEV_NAME=loop0
 DEV=/dev/${DEV_NAME}
 DEV_FILE=${OUT_DIR}/loop
 DEV_FILE_N_ROOTFS=${OUT_DIR}/loop_n_rootfs
-SDCARD_MOUNT_POINT=sdcard
+SDCARD_MOUNT_POINT=${ROOT_DIR}/sdcard
 
 # Rootfs
 DEV_ROOTFS_NAME=loop1
@@ -93,5 +93,5 @@ SIGN_DIR=${OUT_DIR}/signatures
 KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
 
 # Init scripts
-INIT_SC_DIR=init-scripts
+INIT_SC_DIR=${ROOT_DIR}/init-scripts
 DEFAULT_INIT=init_to_rootfs.sh

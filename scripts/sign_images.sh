@@ -4,7 +4,8 @@
 
 set -ex
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
 ALGO=rsa
 DIGEST=sha256

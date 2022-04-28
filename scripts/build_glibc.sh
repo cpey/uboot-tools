@@ -2,7 +2,8 @@
 
 set -ex
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
 INSTALL_DIR=install
 BUILD_DIR=build

@@ -2,7 +2,8 @@
 
 set -x
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
 DEV_SIZE_G=1
 MOUNT_POINT=rootfs

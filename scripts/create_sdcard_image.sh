@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # This script prepares an image for the SD card to be emulated by QEMU as
-# storage media. The image will contain a Linux parition with the rootfs.
+# storage media. It will result in a VFAT partition containing the rootfs
+# image.
 
 set -ex
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
-DEV_SIZE_G=1
+DEV_SIZE_G=2
 
 FIT_IMAGE=0
 SETUP_DEVICE=0
@@ -28,6 +30,11 @@ while [[ $# -gt 0 ]]; do
 			SETUP_DEVICE=1
 			shift
 			;;
+		-a|--add)
+			ADD_FILE=$2
+			shift
+			shift
+			;;
 		*)
 			echo "Invalid argument"
 			exit 1
@@ -37,8 +44,8 @@ done
 
 function trap_ctrlc ()
 {
-    echo "Exiting..."
-    exit 130
+	echo "Exiting..."
+	exit 130
 }
 trap "trap_ctrlc" 2
 
@@ -54,14 +61,11 @@ function remove_loop_device ()
 
 function setup_sdcard () 
 {
-	touch ${DEV_FILE}
-	dd if=/dev/zero of=${DEV_FILE} bs=256 count=$((${DEV_SIZE_G} * 1024 ** 3 / 256))
-	sudo losetup -P ${DEV} ${DEV_FILE}
+	touch ${DEV_FILE_N_ROOTFS}
+	dd if=/dev/zero of=${DEV_FILE_N_ROOTFS} bs=256 count=$((${DEV_SIZE_G} * 1024 ** 3 / 256))
+	sudo losetup -P ${DEV} ${DEV_FILE_N_ROOTFS}
 	sleep 1
 	sudo mkfs.vfat ${DEV}
-	sudo sfdisk ${DEV} <<-__EOF__
-	128M,,L,*
-	__EOF__
 }
 
 function copy_os ()
@@ -85,15 +89,24 @@ function copy_uboot ()
 {
 	sudo mount ${DEV} ${SDCARD_MOUNT_POINT}
 	sudo cp ${UBOOT}/build/u-boot ${SDCARD_MOUNT_POINT}
-    sudo umount ${DEV}
+	sudo umount ${DEV}
 }
 
 function copy_rootfs ()
 {
-	sudo mount ${DEV}p1 ${SDCARD_MOUNT_POINT}
-	sudo tar xvf ${ROOTFS} -C ${SDCARD_MOUNT_POINT}
+	sudo mount ${DEV} ${SDCARD_MOUNT_POINT}
+	sudo cp ${DEV_FILE_ROOTFS} ${SDCARD_MOUNT_POINT}
 	sync
-	sudo umount ${DEV}p1
+	sudo umount ${DEV}
+}
+
+function copy_extra ()
+{
+	[[ ! -n ${ADD_FILE} ]] && return
+	sudo mount ${DEV} ${SDCARD_MOUNT_POINT}
+	sudo cp ${ADD_FILE} ${SDCARD_MOUNT_POINT}
+	sync
+	sudo umount ${DEV}
 }
 
 remove_loop_device
@@ -105,10 +118,9 @@ if [[ ${SETUP_DEVICE} -eq 1 ]]; then
 	sync
 	# Force the kernel to scan the new partition table
 	sudo losetup -d ${DEV}
-	sudo losetup -P ${DEV} ${DEV_FILE}
-	sudo mkfs.ext4 ${DEV}p1
+	sudo losetup -P ${DEV} ${DEV_FILE_N_ROOTFS}
 else
-	sudo losetup -P ${DEV} ${DEV_FILE}
+	sudo losetup -P ${DEV} ${DEV_FILE_N_ROOTFS}
 fi
 
 [[ -e ${SDCARD_MOUNT_POINT} ]] && rm -r ${SDCARD_MOUNT_POINT}
@@ -119,6 +131,7 @@ copy_uboot
 if [[ ${SETUP_DEVICE} -eq 1 ]]; then
 	copy_rootfs
 fi
+copy_extra
 
 rm -r ${SDCARD_MOUNT_POINT}
 remove_loop_device

@@ -2,8 +2,9 @@
 
 set -ex
 
-source config.sh
-source helper.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
+source ${dir}/helper.sh
 
 pushd `pwd`
 cd ${BUILDROOT}

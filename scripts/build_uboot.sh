@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
 BUILD_DIR=build
 

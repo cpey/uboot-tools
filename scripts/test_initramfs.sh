@@ -1,8 +1,9 @@
 #!/bin/bash
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
-./boot_qemu_uboot.sh -s \
+${dir}/boot_qemu_uboot.sh -s \
 	-k ${LINUX}/${LINUX_BIN} \
 	-r ${DEV_FILE_N_ROOTFS} \
 	-d ${LINUX}/${LINUX_DTB} \

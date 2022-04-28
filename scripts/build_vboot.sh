@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source config.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
 
 FIT=0
 while [[ $# -gt 0 ]]; do
@@ -19,11 +20,11 @@ done
 
 # Update U-Boot configs and re-build sdcard.img
 cp ${UBOOT}/.config.save ${UBOOT}/build/.config
-./build_uboot.sh -m
+${dir}/build_uboot.sh -m
 if [[ ${FIT} -eq 1 ]]; then
-	./create_vboot_images.sh
-	./build_uboot.sh -s
-	./create_sdcard_image_rootfs.sh -f
+	${dir}/create_vboot_images.sh
+	${dir}/build_uboot.sh -s
+	${dir}/create_sdcard_image_rootfs.sh -f
 else
-	./create_sdcard_image_rootfs.sh
+	${dir}/create_sdcard_image_rootfs.sh
 fi

@@ -1,8 +1,9 @@
 #!/bin/bash
 set -x
 
-source config.sh
-source helper.sh
+dir=$(dirname $0)
+source ${dir}/config.sh
+source ${dir}/helper.sh
 
 SKIP_UBOOT=0
 while [[ $# -gt 0 ]]; do
