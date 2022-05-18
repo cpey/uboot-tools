@@ -8,6 +8,10 @@ source ${dir}/config.sh
 while [[ $# -gt 0 ]]; do
 	key="$1"
 	case $key in
+		-c|--clean-build)
+			CLEAN_BUILD=1
+			shift
+			;;
 		-s|--save-temps)
 			SAVE_TEMPS=1
 			shift
@@ -22,14 +26,22 @@ done
 pushd `pwd`
 cd ${QEMU}
 
-[[ -d build ]] && rm -r build
-mkdir build && cd build
-
 flags=""
 if [[ -n ${SAVE_TEMPS} ]]; then
 	flags="-save-temps"
 fi
-../configure --extra-cflags=${flags}
+
+if [[ -n ${CLEAN_BUILD} ]]; then
+	rm -rf build
+fi
+
+[[ ! -d build ]] && mkdir build
+cd build
+
+if [[ -n ${CLEAN_BUILD} || -n ${SAVE_TEMPS} ]]; then
+	../configure --extra-cflags=${flags}
+fi
+
 make -j`nproc`
 
 popd
