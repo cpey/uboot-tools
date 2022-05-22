@@ -88,10 +88,14 @@ MKIMAGE_BIN=${UBOOT}/build/tools/mkimage
 OPENSSL=~/repos/openssl
 OPENSSL_INST_DIR=${OPENSSL}/build
 
+# Sudo
+SUDO=~/repos/sudo
+SUDO_INST_DIR=${SUDO}/build
+
 # Sign
 SIGN_DIR=${OUT_DIR}/signatures
 KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
 
 # Init scripts
-INIT_SC_DIR=${ROOT_DIR}/init-scripts
+INIT_SC_DIR=${ROOT_DIR}/init
 DEFAULT_INIT=init_to_rootfs.sh
