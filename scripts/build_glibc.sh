@@ -13,7 +13,7 @@ CLEAN=0
 while [[ $# -gt 0 ]]; do
 	key="$1"
 	case $key in
-		-c|--clean-buildT)
+		-c|--clean-build)
 			CLEAN=1
 			shift
 			;;
@@ -36,18 +36,34 @@ cd ${GLIBC}
 [[ -d ${INSTALL_DIR} ]] && rm -r ${INSTALL_DIR}
 cd ${BUILD_DIR}
 
+CROSSCOMPILE=0
 if [[ ${HOST_ARG} == "aarch64" ]]; then
 	HOST=aarch64-linux-gnu
-else
+    BUILD=i686-linux-gnu
+    CROSSCOMPILE=1
+elif [[ ${HOST_ARG} == "arm" ]]; then
 	HOST=arm-linux-gnueabihf
+    BUILD=i686-linux-gnu
+    CROSSCOMPILE=1
+else
+	HOST=x86_64-linux-gnu
 fi
 
-CXX=${CC}g++ \
-CC=${CC}gcc \
-LD=${CC}ld \
-AR=${CC}ar \
-RANLIB=${CC}ranlib \
-../configure --host=${HOST} --prefix= --build=i686-linux-gnu
+if [[ CROSSCOMPILE -eq 1 ]]; then
+	CXX=${CC}g++ \
+	CC=${CC}gcc \
+	LD=${CC}ld \
+	AR=${CC}ar \
+	RANLIB=${CC}ranlib \
+	../configure --host=${HOST} --prefix= --build=${BUILD}
+else
+	CXX=g++ \
+	CC=gcc \
+	LD=ld \
+	AR=ar \
+	RANLIB=ranlib \
+	../configure --host=${HOST} --prefix=
+fi
 make -j`nproc`
 make install install_root=${GLIBC}/${INSTALL_DIR}
 
