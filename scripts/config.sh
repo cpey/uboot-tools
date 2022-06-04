@@ -2,6 +2,7 @@
 
 ROOT_DIR=$(dirname $0)/..
 OUT_DIR=${ROOT_DIR}/out
+# Root File System from https://rcn-ee.com/rootfs/eewiki/minfs/
 ROOTFS=~/repos/debian-11.2-minimal-armhf-2021-12-20/armhf-rootfs-debian-bullseye.tar
 
 # QEMU

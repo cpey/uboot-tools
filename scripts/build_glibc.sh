@@ -17,6 +17,10 @@ while [[ $# -gt 0 ]]; do
 			CLEAN=1
 			shift
 			;;
+		-d|--disable-werror)
+			OPTIONS=--disable-werror
+			shift
+			;;
 		-h|--host)
 			HOST_ARG=$2
 			shift
@@ -31,7 +35,7 @@ done
 
 pushd `pwd`
 cd ${GLIBC}
-[[ -n ${CLEAN} ]] && [[ -d ${BUILD_DIR} ]] && rm -r ${BUILD_DIR}
+[[ ${CLEAN} -eq 1 ]] && [[ -d ${BUILD_DIR} ]] && rm -r ${BUILD_DIR}
 [[ ! -d ${BUILD_DIR} ]] && mkdir ${BUILD_DIR}
 [[ -d ${INSTALL_DIR} ]] && rm -r ${INSTALL_DIR}
 cd ${BUILD_DIR}
@@ -55,14 +59,14 @@ if [[ CROSSCOMPILE -eq 1 ]]; then
 	LD=${CC}ld \
 	AR=${CC}ar \
 	RANLIB=${CC}ranlib \
-	../configure --host=${HOST} --prefix= --build=${BUILD}
+	../configure --host=${HOST} ${OPTIONS} --prefix= --build=${BUILD}
 else
 	CXX=g++ \
 	CC=gcc \
 	LD=ld \
 	AR=ar \
 	RANLIB=ranlib \
-	../configure --host=${HOST} --prefix=
+	../configure --host=${HOST} ${OPTIONS} --prefix=
 fi
 make -j`nproc`
 make install install_root=${GLIBC}/${INSTALL_DIR}
