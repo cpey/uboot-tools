@@ -41,21 +41,33 @@ cd ${GLIBC}
 cd ${BUILD_DIR}
 
 CROSSCOMPILE=0
+ARMCOMPILER=0
 if [[ ${HOST_ARG} == "aarch64" ]]; then
 	HOST=aarch64-linux-gnu
-    BUILD=i686-linux-gnu
-    CROSSCOMPILE=1
+	BUILD=i686-linux-gnu
+	CROSSCOMPILE=1
+	ARMCOMPILER=1
 elif [[ ${HOST_ARG} == "arm" ]]; then
 	HOST=arm-linux-gnueabihf
-    BUILD=i686-linux-gnu
-    CROSSCOMPILE=1
+	BUILD=i686-linux-gnu
+	CROSSCOMPILE=1
+	ARMCOMPILER=1
+elif [[ ${HOST_ARG} == "i686" ]]; then
+	HOST=i686-linux-gnu
+	BUILD=x86_64-linux-gnu
+	CROSSCOMPILE=1
 else
 	HOST=x86_64-linux-gnu
 fi
 
-if [[ CROSSCOMPILE -eq 1 ]]; then
-	CXX=${CC}g++ \
-	CC=${CC}gcc \
+if [[ ${CROSSCOMPILE} -eq 1 ]]; then
+	MODE=""
+	if [[ ${ARMCOMPILER} -eq 0 ]]; then
+		CC=/usr/bin/
+		MODE=-m32
+	fi
+	CXX="${CC}g++ ${MODE}" \
+	CC="${CC}gcc ${MODE}" \
 	LD=${CC}ld \
 	AR=${CC}ar \
 	RANLIB=${CC}ranlib \
