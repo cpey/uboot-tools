@@ -59,13 +59,9 @@ if [[ CROSSCOMPILE -eq 1 ]]; then
 	LD=${CC}ld \
 	AR=${CC}ar \
 	RANLIB=${CC}ranlib \
-	../configure --host=${HOST} ${OPTIONS} --prefix= --build=${BUILD}
+	../configure --build=${BUILD} --host=${HOST} ${OPTIONS} --prefix=
 else
-	CXX=g++ \
-	CC=gcc \
-	LD=ld \
-	AR=ar \
-	RANLIB=ranlib \
+	LIBS="-lstat" \
 	../configure --host=${HOST} ${OPTIONS} --prefix=
 fi
 make -j`nproc`
