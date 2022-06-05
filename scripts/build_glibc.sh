@@ -26,6 +26,11 @@ while [[ $# -gt 0 ]]; do
 			shift
 			shift
 			;;
+		-i|--install-dir)
+			INSTALL_DIR=$2
+			shift
+			shift
+			;;
 		*)
 			echo "Invalid argument"
 			exit 1
