@@ -93,6 +93,10 @@ OPENSSL_INST_DIR=${OPENSSL}/build
 SUDO=~/repos/sudo
 SUDO_INST_DIR=${SUDO}/build
 
+# tcpdump
+TCPDUMP=~/repos/tcpdump-4.99.4
+TCPDUMP_INST_DIR=${TCPDUMP}/build
+
 # Sign
 SIGN_DIR=${OUT_DIR}/signatures
 KERNEL_IMG=${LINUX}/arch/arm/boot/uImage
